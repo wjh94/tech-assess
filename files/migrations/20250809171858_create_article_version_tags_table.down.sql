@@ -1,0 +1,1 @@
+DROP TABLE article_version_tags;

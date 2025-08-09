@@ -50,26 +50,9 @@ func handler(c *gin.Context) {
 	c.String(200, "Hello, World!")
 }
 
-func profileHandler(c *gin.Context) {
-	token, exists := c.Get("jwt")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "JWT required"})
-		return
-	}
-	claims, ok := token.(*jwt.Token).Claims.(jwt.MapClaims)
-	if !ok {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid claims"})
-		return
-	}
-	c.JSON(200, gin.H{"user": claims})
-}
-
 func registerRoutes(db *sql.DB, router *gin.Engine) {
 	// Optional JWT for all routes
 	router.Use(jwtOptionalMiddleware())
 
 	router.GET("/", handler)
-	// Example protected endpoint
-	router.GET("/profile", jwtRequiredMiddleware(), profileHandler)
-	// Add more endpoints here as needed, using db and router
 }

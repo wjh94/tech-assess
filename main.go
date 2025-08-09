@@ -2,18 +2,21 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	// Initialize logrus logger
+	logger := logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{})
+
 	// Initialize native SQL with PostgreSQL
 	dsn := "host=localhost user=postgres password=postgres dbname=tech_assess port=5432 sslmode=disable"
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		fmt.Println("Failed to connect to database:", err)
+		logger.Error("Failed to connect to database: ", err)
 		return
 	}
 	defer db.Close()
@@ -22,10 +25,10 @@ func main() {
 	router := gin.Default()
 
 	// Register endpoints from routes.go
-	registerRoutes(db, router)
+	registerRoutes(db, router /*, logger */) // Pass logger if needed
 
-	fmt.Println("Starting server at :8080")
+	logger.Info("Starting server at :8080")
 	if err := router.Run(":8080"); err != nil {
-		fmt.Println("Server failed:", err)
+		logger.Error("Server failed: ", err)
 	}
 }

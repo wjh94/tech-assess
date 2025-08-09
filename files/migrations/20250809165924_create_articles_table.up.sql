@@ -5,3 +5,4 @@ CREATE TABLE articles (
     created_at timestamp not null default current_timestamp,
     updated_at timestamp not null default current_timestamp
 );
+-- This migration file is used to create the articles table.
